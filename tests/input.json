@@ -17,5 +17,6 @@
 "list": [
         {"key1": "value1", "key2": "value2"},
         {"key1": "value3", "key2": "value4"}
-        ]
+        ],
+"primitivearrlist": [1,2,3,4,5,6,7]
 }

@@ -6,6 +6,7 @@
 # @author CodeExpress
 
 require 'json'
+require 'set'
 
 module Json2html
   
@@ -18,16 +19,13 @@ module Json2html
       puts e.message
       throw e
     end
-
     html = self.create_table(hash, options)
-    
     return html
   end
 
   def self.create_table(hash, options)
     html = start_table_tag(options)
     hash.each do |key, value|
-
       # key goes in a column and value in second column of the same row
       html += "<tr><th>#{key}</th>\n"
       html += "<td>"
@@ -42,7 +40,7 @@ module Json2html
           if keys
             # if elements of this array are hashes with same keys,
             # display it as a top-down table
-            html += create_vertical_table_from_array(value, keys)
+            html += create_vertical_table_from_array(value, keys, options)
           else
             # non similar keys, create horizontal table
             value.each do |h|
@@ -50,22 +48,63 @@ module Json2html
             end
           end
         else
-          # array if primitive data types, all values can be
-          # displayed in in cell
-          html += "<tr><th>#{key}</th>\n"
-          html += "<td>"
-          html += value
-          html += "</td></tr>"
+          # array of a primitive data types eg. [1,2,3]
+          # all values can be displayed in in cell
+          html += "#{value}</td></tr>\n"
         end
       else      # simple primitive data type of value (non hash, non array)
-        html += "<tr><th>#{key}</th><td>#{value}</td></tr>"
+        html += "#{value}</td></tr>\n"
       end
-      html += "</td></tr>" # close the value column and the row
     end
     html += self.close_table_tag
     return html
   end
 
+  # This method checks if all the individual array items
+  # are hashes with similar keys.
+  def self.similar_keys?(arr)
+    previous_keys = Set.new
+    current_keys   = Set.new
+    arr.each do |hash|
+      # every item of the array should be a hash, if not return false
+      return nil if not  hash.is_a?(Hash)
+      current_keys = hash.keys.to_set
+      if previous_keys.empty?
+        previous_keys = current_keys # happens on first iteration
+      else
+        # if different keys in two distinct array elements(hashes), return false 
+        return nil if not (previous_keys^current_keys).empty?
+        previous_keys = current_keys
+      end
+    end
+    return arr[0].keys # all array elements were hash with same keys
+  end
+
+  # creates a vertical table of following form for the array of hashes like this:
+  #        ---------------------
+  #       | key1 | key2 | key3  |
+  #        ---------------------
+  #       | val1 | val2 | val3  |
+  #       | val4 | val5 | val6  |
+  #       | val9 | val8 | val7  |
+  #        ---------------------
+  def self.create_vertical_table_from_array(array_of_hashes, keys, options)
+    html = start_table_tag(options)
+    html += "<tr>\n"
+    keys.each do |key|
+      html += "<th>#{key}</th>\n"
+    end
+    html += "</tr>\n"
+    array_of_hashes.each do |hash|
+      html += "<tr>\n"
+      keys.each do |key|
+        html += "<td>#{hash[key]}</td>\n"
+      end
+      html += "</tr>\n"
+    end
+    html += self.close_table_tag
+  end
+  
   def self.start_table_tag(options)
     if options[:style] == "bootstrap"
       css_class = ""
@@ -78,21 +117,4 @@ module Json2html
   def self.close_table_tag
     "</table>\n"
   end
-
-  def self.start_row_tag
-    "<tr>\n"
-  end
-
-  def self.close_row_tag
-    "</tr>\n"
-  end
-
-  def self.start_cell_tag
-    "<td>\n"
-  end
-
-  def self.close_cell_tag
-    "</td>\n"
-  end
-
 end

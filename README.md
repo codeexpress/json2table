@@ -1,5 +1,11 @@
 Usage:
 
+Example usage is shown below.
 ```
-ruby convert.rb  <input.txt > output.html
+cat tests/input.json | ruby example.rb > tests/output.html
 ```
+
+
+## Gem
+
+<details of gem>
