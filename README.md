@@ -1,10 +1,10 @@
 Usage:
 
-Example usage is shown below.
+Example usage is shown below:
+```bash
+$ cd tests
+$ cat input.json | ruby example.rb > output.html
 ```
-cat tests/input.json | ruby example.rb > tests/output.html
-```
-
 
 ## Gem
 

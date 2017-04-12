@@ -27,15 +27,15 @@ module Json2html
     html = start_table_tag(options)
     hash.each do |key, value|
       # key goes in a column and value in second column of the same row
-      html += "<tr><th>#{key}</th>\n"
+      html += "<tr><th>#{to_human(key)}</th>\n"
       html += "<td>"
       
       if value.is_a?(Hash)
         # create a row with key as heading and body
         # as another table
-        html += self.create_table(value, options)
+        html += create_table(value, options)
       elsif value.is_a?(Array)
-        if value[1].is_a?(Hash) # Array of hashes
+        if value[0].is_a?(Hash) # Array of hashes
           keys = similar_keys?(value)
           if keys
             # if elements of this array are hashes with same keys,
@@ -44,7 +44,7 @@ module Json2html
           else
             # non similar keys, create horizontal table
             value.each do |h|
-              html += self.create_table(h, options)
+              html += create_table(h, options)
             end
           end
         else
@@ -56,7 +56,7 @@ module Json2html
         html += "#{value}</td></tr>\n"
       end
     end
-    html += self.close_table_tag
+    html += close_table_tag
     return html
   end
 
@@ -92,29 +92,54 @@ module Json2html
     html = start_table_tag(options)
     html += "<tr>\n"
     keys.each do |key|
-      html += "<th>#{key}</th>\n"
+      html += "<th>#{to_human(key)}</th>\n"
     end
     html += "</tr>\n"
     array_of_hashes.each do |hash|
       html += "<tr>\n"
       keys.each do |key|
-        html += "<td>#{hash[key]}</td>\n"
+        if hash[key].is_a?(Hash) # another hash, create table out of it
+          html += "<td>#{create_table(hash[key], options)}</td>\n"
+        elsif hash[key].is_a?(Array)
+          if hash[key][0].is_a?(Hash) # Array of hashes
+            k = similar_keys?(hash[key])
+            if k
+              # if elements of this array are hashes with same keys,
+              # display it as a top-down table
+              html += create_vertical_table_from_array(value, k, options)
+            else
+              # non similar keys, create horizontal table
+              hash[key].each do |h|
+                html += create_table(h, options)
+              end
+            end
+          end
+        else
+          html += "<td>#{to_human(hash[key])}</td>\n"
+        end
       end
       html += "</tr>\n"
     end
     html += self.close_table_tag
   end
-  
   def self.start_table_tag(options)
-    if options[:style] == "bootstrap"
-      css_class = ""
-    elsif not options[:table_class].nil?
-      css_class = options[:table_class]
-    end
-    "<table class='#{css_class}' border=1>\n"
+    "<table class='#{options[:table_class]}' 
+            style='#{options[:table_style]}'
+            #{options[:table_attributes]} >\n"
   end
 
   def self.close_table_tag
     "</table>\n"
+  end
+  
+  # turns CamelCase and snake_case keys to human readable strings
+  # Input:  this_isA_mixedCAse_line-string
+  # Output: "This Is A Mixed C Ase Line String"
+  def self.to_human(key)
+    key.gsub(/::/, '/').
+      gsub(/([A-Z]+)([A-Z][a-z])/,'\1 \2').
+      gsub(/([a-z\d])([A-Z])/,'\1 \2').
+      tr("-", " ").tr("_", " ").
+      split.map {|word| word.capitalize}.join(" ")
   end
 end

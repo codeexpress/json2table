@@ -1,11 +1,12 @@
 {
-"here": 23,
-"there": "this is long",
-"some" : {
+"message": "Some message",
+"number": 23,
+"string": "some string",
+"hash" : {
        "key1": "value1",
        "key2": "value2"
       },
-"somew" : {
+"nested_hash" : {
        "key1": "value1",
        "key2": "value2",
        "some" : {
@@ -13,10 +14,9 @@
               "key2": "value2"
        }
       },
-"message": "This is some long messageThis is some long messageThis is some long messageThis is some long messageThis is some long messageThis is some long messageThis is some long messageThis is some long message",
 "list": [
         {"key1": "value1", "key2": "value2"},
         {"key1": "value3", "key2": "value4"}
         ],
-"primitivearrlist": [1,2,3,4,5,6,7]
+"primitive_arr_list": [1,2,3,4,5,6,7]
 }
