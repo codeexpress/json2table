@@ -1,4 +1,4 @@
-require '../json2html'
+require '../lib/json2table'
 
 
 table_options = {
@@ -9,7 +9,7 @@ table_options = {
 }
 
 json = STDIN.read
-json2html =
-  Json2html::get_html_table(json, table_options)
-puts json2html
+json2table =
+  Json2table::get_html_table(json, table_options)
+puts json2table
 

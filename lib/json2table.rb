@@ -1,21 +1,21 @@
 # This module contains the entire source code needed to
 # convert a JSON blob into a HTML Table.
 #
-# The gem is at http://rubygems.org/gems/json2html
-# To install the gem, run command `gem install json2html`
+# The gem is at http://rubygems.org/gems/json2table
+# To install the gem, run command `gem install json2table`
 # @author CodeExpress
 
 require 'json'
 require 'set'
 
-module Json2html
+module Json2table
   
   def self.get_html_table(json_str, options = {})
     html = ""
     begin
       hash = JSON.parse(json_str)
     rescue Exception => e
-      puts "JSON2HTML:: Input not a valid JSON, provide valid JSON object"
+      puts "JSON2TABLE:: Input not a valid JSON, provide valid JSON object"
       puts e.message
       throw e
     end
