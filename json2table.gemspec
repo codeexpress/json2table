@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name          = 'json2table'
-  s.version       = '1.0.0'
-  s.date          = '2017-04-11'
+  s.version       = '1.0.2'
+  s.date          = '2017-04-12'
   s.summary       = "Converts JSON to HTML tables"
   s.description   =
     "This gem provides functionality to convert a JSON object into HTML
