@@ -115,7 +115,7 @@ module Json2table
             end
           end
         else
-          html += "<td>#{to_human(hash[key])}</td>\n"
+          html += "<td>#{hash[key]}</td>\n"
         end
       end
       html += "</tr>\n"
