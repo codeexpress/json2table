@@ -13,7 +13,11 @@ module Json2table
   def self.get_html_table(json_str, options = {})
     html = ""
     begin
-      hash = JSON.parse(json_str)
+      if json_str.is_a?(Hash)
+        hash = json_str
+      else
+        hash = JSON.parse(json_str)
+      end
     rescue Exception => e
       puts "JSON2TABLE:: Input not a valid JSON, provide valid JSON object"
       puts e.message
