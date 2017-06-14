@@ -29,40 +29,52 @@ module Json2table
 
   def self.create_table(hash, options)
     html = start_table_tag(options)
+    if hash.is_a?(Array)
+      html += "<tr><td>\n"
+      #puts ">>>> #{process_array(hash, options)}"
+      html += process_array(hash, options)
+    else
     hash.each do |key, value|
-      # key goes in a column and value in second column of the same row
-      html += "<tr><th>#{to_human(key)}</th>\n"
-      html += "<td>"
+       # key goes in a column and value in second column of the same row
+       html += "<tr><th>#{to_human(key)}</th>\n"
+       html += "<td>"
       
-      if value.is_a?(Hash)
-        # create a row with key as heading and body
-        # as another table
-        html += create_table(value, options)
-      elsif value.is_a?(Array)
-        if value[0].is_a?(Hash) # Array of hashes
-          keys = similar_keys?(value)
+       if value.is_a?(Hash)
+         # create a row with key as heading and body
+         # as another table
+         html += create_table(value, options)
+       elsif value.is_a?(Array)
+             html += process_array(value, options)
+       else      # simple primitive data type of value (non hash, non array)
+         html += "#{value}</td></tr>\n"
+       end
+     end
+    end
+    html += close_table_tag
+    return html
+  end
+
+def self.process_array(arr, options)
+    html = ""
+        if arr[0].is_a?(Hash) # Array of hashes
+          keys = similar_keys?(arr)
           if keys
             # if elements of this array are hashes with same keys,
             # display it as a top-down table
-            html += create_vertical_table_from_array(value, keys, options)
+            html += create_vertical_table_from_array(arr, keys, options)
           else
             # non similar keys, create horizontal table
-            value.each do |h|
+            arr.each do |h|
               html += create_table(h, options)
             end
           end
         else
           # array of a primitive data types eg. [1,2,3]
           # all values can be displayed in in cell
-          html += "#{value}</td></tr>\n"
+          html += "#{arr}</td></tr>\n"
         end
-      else      # simple primitive data type of value (non hash, non array)
-        html += "#{value}</td></tr>\n"
-      end
-    end
-    html += close_table_tag
-    return html
-  end
+return html
+end
 
   # This method checks if all the individual array items
   # are hashes with similar keys.
