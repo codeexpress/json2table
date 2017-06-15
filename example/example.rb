@@ -11,5 +11,6 @@ json = STDIN.read
 
 json2table =
   Json2table::get_html_table(json, table_options)
+
 puts json2table
 
