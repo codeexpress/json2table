@@ -71,8 +71,10 @@ module Json2table
       end
     else
       # array of a primitive data types eg. [1,2,3]
-      # all values can be displayed in in cell
-      html += "#{arr}</td></tr>\n"
+      # all values can be displayed in a single column table
+      arr.each do |element|
+        html += "#{element}<br/>\n"        
+      end
     end
     return html
   end
@@ -118,21 +120,26 @@ module Json2table
         if hash[key].is_a?(Hash) # another hash, create table out of it
           html += "<td>#{create_table(hash[key], options)}</td>\n"
         elsif hash[key].is_a?(Array)
-          if hash[key][0].is_a?(Hash) # Array of hashes
-            k = similar_keys?(hash[key])
-            if k
-              # if elements of this array are hashes with same keys,
-              # display it as a top-down table
-              html += "<td>\n"
-              html += create_vertical_table_from_array(hash[key], k, options)
-              html += "</td>\n"
-            else
-              # non similar keys, create horizontal table
-              hash[key].each do |h|
-                html += create_table(h, options)
-              end
-            end
-          end
+          html += "<td>\n"
+          html += process_array(hash[key], options)
+          html += "</td>\n"
+          # if hash[key][0].is_a?(Hash) # Array of hashes
+          #   k = similar_keys?(hash[key])
+          #   if k
+          #     # if elements of this array are hashes with same keys,
+          #     # display it as a top-down table
+          #     html += "<td>\n"
+          #     html += create_vertical_table_from_array(hash[key], k, options)
+          #     html += "</td>\n"
+          #   else
+          #     # non similar keys, create horizontal table
+          #     hash[key].each do |h|
+          #       html += create_table(h, options)
+          #     end
+          #   end
+          # else
+          #   html += "<td>#{hash[key]}</td>\n"
+          # end
         else
           html += "<td>#{hash[key]}</td>\n"
         end
