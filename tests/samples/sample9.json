@@ -1,0 +1,32 @@
+{
+    "key1": [
+        {
+            "subkey1": "value1",
+            "subkey2": [
+                "subvalue1",
+                "subvalue2"
+            ]
+        },
+        {
+            "subkey1": "value1",
+            "subkey2": [
+                "subvalue1",
+                "subvalue2"
+            ]
+        },
+        {
+            "subkey1": "value1",
+            "subkey2": [
+                "subvalue1",
+                "subvalue2"
+            ]
+        },
+        {
+            "subkey1": "value1",
+            "subkey2": [
+                "subvalue1",
+                "subvalue2"
+            ]
+        }
+    ]
+}
